@@ -53,8 +53,6 @@ jobs:
         path: |
           android/app/build/outputs/apk/debug/app-debug.apk
           android/app/build/outputs/bundle/release/app-release.aab
-          
-name: Build love that Android
 
 on:
   workflow_dispatch:
