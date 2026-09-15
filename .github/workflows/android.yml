@@ -1,3 +1,4 @@
+-name: jekyll site CI
 name: Build love that Android
 
 on:
