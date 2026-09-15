@@ -60,7 +60,7 @@ permissions:
 
 concurrency:
   group: android-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress:
 
       NODE_VERSION: '22'
       JAVA_VERSION: '21'
