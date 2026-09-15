@@ -38,7 +38,7 @@ jobs:
 
       - name: Install Node dependencies
       run: npm install
-      working-directory: ./frontend # <--- Change to your subfolder name
+      working-directory: ./frontend # <--- lovethat
 
     - name: Run application
       run: npm run build
