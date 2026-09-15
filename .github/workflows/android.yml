@@ -54,7 +54,6 @@ jobs:
           android/app/build/outputs/apk/debug/app-debug.apk
           android/app/build/outputs/bundle/release/app-release.aab
 
-on:
   workflow_dispatch:
   push:
     branches:
