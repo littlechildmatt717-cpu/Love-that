@@ -2,7 +2,7 @@ name: Build love that Android
 
 on:
   workflow_dispatch:
-  push:
+  push: 
     branches:
       - main
     paths:
