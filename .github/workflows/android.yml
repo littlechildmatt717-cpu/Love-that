@@ -62,7 +62,6 @@ concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
 
-    env:
       NODE_VERSION: '22'
       JAVA_VERSION: '21'
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
