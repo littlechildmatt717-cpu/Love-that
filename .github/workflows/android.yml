@@ -38,7 +38,7 @@ jobs:
 
       - name: Install Node dependencies
       run: npm install
-      working-directory: ./frontend # <--- lovethat
+      working-directory: ./frontend # <--- nodygotya
 
     - name: Run application
       run: npm run build
