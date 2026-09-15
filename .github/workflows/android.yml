@@ -302,16 +302,18 @@ jobs:
       # BUILD SUMMARY
       # --------------------------------------------------
 
-      - name: Build summary
+       - name: Build summary
         if: always()
         run: |
-          echo "## love that Android Build" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Repository:** ${{ github.repository }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Branch:** ${{ github.ref_name }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Commit:** ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Node.js:** $(node --version)" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **npm:** $(npm --version)" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Java:** $(java -version 2>&1 | head -n 1)" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Android SDK:** 36" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Status:** ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY
+          {
+            echo "## love that Android Build"
+            echo ""
+            echo "Repository: ${{ github.repository }}"
+            echo "Branch: ${{ github.ref_name }}"
+            echo "Commit: ${{ github.sha }}"
+            echo "Node.js: $(node --version)"
+            echo "npm: $(npm --version)"
+            echo "Java: 21"
+            echo "Android SDK: 36"
+            echo "Status: ${{ job.status }}"
+          } >> "$GITHUB_STEP_SUMMARY"
