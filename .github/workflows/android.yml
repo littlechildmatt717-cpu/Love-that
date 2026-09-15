@@ -53,7 +53,7 @@ jobs:
         path: |
           android/app/build/outputs/apk/debug/app-debug.apk
           android/app/build/outputs/bundle/release/app-release.aab
-09:07
+          
 name: Build love that Android
 
 on:
