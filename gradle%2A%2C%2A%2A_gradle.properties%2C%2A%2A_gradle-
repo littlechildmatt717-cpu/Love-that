@@ -1,0 +1,7 @@
+# Gradle configuration for the love that Android project.
+# Java 21 is supplied by GitHub Actions; Gradle will use the runner's Java 21 environment.
+
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+org.gradle.parallel=true
+org.gradle.caching=true
+android.useAndroidX=true
