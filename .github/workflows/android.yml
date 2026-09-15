@@ -1,0 +1,149 @@
+name: Build love that Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android release build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      NODE_VERSION: '22'
+      JAVA_VERSION: '21'
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+     - name: Install Node dependencies run:
+     npm install working-directory: 
+     ./frontend # <--- 
+     Change to your subfolder name - name:
+     Run application run:
+     npm run build working-directory:
+     ./frontend # <---
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install npm dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Verify package lockfile
+        run: test -s package-lock.json
+
+      - name: Build web application
+        run: npm run build
+
+      - name: Verify web build
+        run: test -s dist/index.html
+
+      - name: Add Android platform
+        run: npx --no-install cap add android
+
+      - name: Sync Capacitor Android project
+        run: npx --no-install cap sync android
+
+      - name: Configure camera and microphone permissions
+        run: python3 scripts/configure-media-permissions.py .
+
+      - name: Verify Android project
+        run: |
+          test -f android/gradlew
+          chmod +x android/gradlew
+
+      - name: Configure Android SDK packages
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Create release signing keystore
+        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' && env.ANDROID_KEYSTORE_PASSWORD != '' && env.ANDROID_KEY_ALIAS != '' && env.ANDROID_KEY_PASSWORD != '' }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/love-that-release.keystore"
+          test -s "$RUNNER_TEMP/love-that-release.keystore"
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/love-that-release.keystore" >> "$GITHUB_ENV"
+
+      - name: Configure Gradle release signing
+        if: ${{ env.ANDROID_KEYSTORE_PATH != '' }}
+        run: |
+          python3 scripts/configure-android-signing.py android/app/build.gradle
+
+      - name: Build Android App Bundle
+        if: ${{ env.ANDROID_KEYSTORE_PATH != '' }}
+        working-directory: android
+        run: ./gradlew --no-daemon --stacktrace bundleRelease
+
+      - name: Build unsigned Android App Bundle
+        if: ${{ env.ANDROID_KEYSTORE_PATH == '' }}
+        working-directory: android
+        run: ./gradlew --no-daemon --stacktrace bundleRelease
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew --no-daemon --stacktrace assembleDebug
+
+      - name: Locate Android artifacts
+        run: |
+          echo "AAB files:"
+          find android/app/build/outputs/bundle -type f -name "*.aab" -print || true
+          echo "APK files:"
+          find android/app/build/outputs/apk -type f -name "*.apk" -print || true
+
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: love-that-android-aab-${{ github.sha }}
+          path: android/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Android debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: love-that-android-debug-apk-${{ github.sha }}
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Build summary
+        if: always()
+        run: |
+          echo "## love that Android Build" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Repository: ${{ github.repository }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Branch: ${{ github.ref_name }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit: ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
