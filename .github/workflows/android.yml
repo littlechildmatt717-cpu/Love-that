@@ -26,7 +26,7 @@ jobs:
         ./frontend # <--- .github/workflows/nodeygotya
         - name: Run application run: 
         npm run build working-directory: 
-        ./frontend # <--- .github/workflows/nodeygotya
+        ./frontend # <---
 
 
     # 3. Set up Java Environment (Required for Android Gradle)
