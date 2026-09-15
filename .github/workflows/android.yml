@@ -14,7 +14,6 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/android.yml'
-      -  .github/workflows/LOCKFILE
       
 permissions:
   contents: read
@@ -67,7 +66,6 @@ jobs:
 
       - name: Verify package lockfile
         run: test -s package-lock.json
-         .github/workflows/LOCKFILE
 
       - name: Build web application
         run: npm run build
