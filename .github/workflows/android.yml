@@ -107,7 +107,7 @@ jobs:
         if: ${{ env.ANDROID_KEYSTORE_PATH != '' }}
         run: |
           python3 scripts/configure-android-signing.py android/app/build.gradle
-
+          
       - name: Build signed Android App Bundle
         if: ${{ env.ANDROID_KEYSTORE_PATH != '' }}
         working-directory: android
