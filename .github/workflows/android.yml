@@ -13,10 +13,8 @@ concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:
-
     env:
-      NODE_VERSION: '22'
+      : '22'
       JAVA_VERSION: '21'
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
