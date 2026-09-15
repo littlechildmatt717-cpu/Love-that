@@ -21,6 +21,13 @@ jobs:
       with:
         node-version: '20' # Update to match your project's Node version
         cache: 'npm'
+        - name: Install Node dependencies run: 
+        npm install working-directory: 
+        ./frontend # <--- nodeygotya
+        - name: Run application run: 
+        npm run build working-directory: 
+        ./frontend # <--- nodygotya
+
 
     # 3. Set up Java Environment (Required for Android Gradle)
     - name: Set up JDK 17
