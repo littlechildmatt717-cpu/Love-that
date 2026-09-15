@@ -55,10 +55,10 @@ jobs:
           android/app/build/outputs/bundle/release/app-release.aab
 
 
-permissions:
+   permissions:
   contents: read
 
-concurrency:
+  concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress:
 
