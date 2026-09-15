@@ -62,7 +62,6 @@ concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:
   android:
     name: Android release build
     runs-on: ubuntu-latest
